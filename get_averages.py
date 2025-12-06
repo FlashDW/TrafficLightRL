@@ -10,7 +10,7 @@ deactivate
 
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
-from temp_env import TrafficEnv
+from traffic_env import TrafficEnv
 
 
 def make_env():
@@ -21,11 +21,11 @@ def make_env():
 
 venv = DummyVecEnv([lambda: make_env()])
 
-venv = VecNormalize.load("data/50 million on VM/traffic_env_norm.pkl", venv)
+venv = VecNormalize.load("data/100 million on VM new reward function/traffic_env_norm_new_reward_function_100M.pkl", venv)
 venv.training = False
 venv.norm_reward = False
 
-model = PPO.load("data/50 million on VM/traffic_ppo.zip", env=venv)
+model = PPO.load("data/100 million on VM new reward function/traffic_ppo_new_reward_function_100M.zip", env=venv)
 
 obs = venv.reset()
 
@@ -50,7 +50,7 @@ while count<max_episodes and running:
     num_cars = inner.sim.num_cars
 
     if done:
-        total_crashes += info[0]["crashes"]
+        total_crashes += info[0]["num_crashes"]
         wait_time_per_car += info[0]["average_wait_time"]
         num_cars = 0
         prev_cars = 0

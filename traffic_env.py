@@ -1,9 +1,3 @@
-"""
-old gym environment used for get_averages.py when im getting averages from older model versions
-"""
-
-
-
 import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
