@@ -1,0 +1,17 @@
+normalized observations and rewards
+
+observations: [number of cars in each lane (4), speed of first car before the stop blocks (4), distance of first car before the stop blocks (4)]
+
+
+model: DQN
+
+learning_rate=1e-4,
+buffer_size=50000,
+learning_starts=1000,
+batch_size=32,
+gamma=0.99,
+train_freq=4,
+target_update_interval=1000,
+verbose=1,
+
+total_timesteps=15_000_000

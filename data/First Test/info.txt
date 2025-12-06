@@ -1,0 +1,7 @@
+no normalization
+
+200k steps
+
+observations: [number of cars in each lane (4), speed of first car before the stop blocks (4), distance of first car before the stop blocks (4)]
+
+model: DQN
