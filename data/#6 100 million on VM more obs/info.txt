@@ -1,0 +1,40 @@
+normalized observations and rewards
+
+changed obs to:
+[current light state, time since light changed, number of cars in each lane (4), speed of first 3 cars (4), distance of first 3 cars (4)]
+
+model: PPO
+
+trained on GPU of RTX 4000
+
+trained with 8 envs
+
+100 million timesteps
+
+neural network: 256, 256, 128
+
+ReLU
+
+learning rate scheduele: lr_schedule = lambda progress_remaining: max(5e-4 * progress_remaining, 1e-5)
+
+n_steps=2048,
+        batch_size=64,
+        n_epochs=10,
+        gamma=0.99,
+        gae_lambda=0.95,
+        clip_range=0.2,
+        ent_coef=0.01,
+        vf_coef=0.5,
+        max_grad_norm=0.5,
+        policy_kwargs=policy_kwargs,
+
+Training took 
+
+Training took 93,600 seconds
+or
+1,600 minutes
+or
+26 hours
+
+Average crashes per minute: 0
+Average wait time per car: 13.2 seconds

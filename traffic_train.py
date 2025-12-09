@@ -28,7 +28,7 @@ if __name__ == "__main__":
     num_envs = 8
 
     checkpoint_callback = CheckpointCallback(
-        save_freq=100_000,  # every 100k steps
+        save_freq=1_000_000,  # every 100k steps
         save_path="./checkpoints/",
         name_prefix="traffic_ppo"
     )
@@ -77,8 +77,8 @@ if __name__ == "__main__":
     print(f"{(end - start)/3600:.2f} hours")
 
     # Save normalized environment and trained model
-    env.save("traffic_env_norm_new_actions_100M.pkl")
-    model.save("traffic_ppo_new_actions_100M")
+    env.save("traffic_env_norm_more_obs_100M.pkl")
+    model.save("traffic_ppo_more_obs_100M")
 
     env.close()
 

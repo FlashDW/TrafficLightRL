@@ -20,10 +20,10 @@ class TrafficEnv(gym.Env):
         """
         self.action_space = spaces.Discrete(3)
 
-        # Observation: [number of cars in each lane (4), speed of first 3 cars (4), distance of first 3 cars (4)]
+        # Observation: [current light state, time since light changed, number of cars in each lane (4), speed of first 3 cars (4), distance of first 3 cars (4)]
         self.observation_space = spaces.Box(
-            low=np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300], dtype=np.float32),
-            high=np.array([300, 300, 300, 300, 457, 457, 457, 457, 457, 457, 457, 457, 457, 457, 457, 457, 900, 900, 900, 900, 900, 900, 900, 900, 900, 900, 900, 900], dtype=np.float32),
+            low=np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300], dtype=np.float32),
+            high=np.array([2, 60, 300, 300, 300, 300, 457, 457, 457, 457, 457, 457, 457, 457, 457, 457, 457, 457, 900, 900, 900, 900, 900, 900, 900, 900, 900, 900, 900, 900], dtype=np.float32),
             dtype=np.float32
         )
 
@@ -31,8 +31,12 @@ class TrafficEnv(gym.Env):
 
         self.dt = 1/20
 
+        self.time_since_change = 0.0
+
     # Helper functions
     def _get_observation(self):
+        light_state = 0 if self.sim.horiz_light == 'g' else 1 if self.sim.vert_light == 'g' else 2
+        time_since_change = self.time_since_change
         num_cars = [min(len(lane), 300) for lane in self.sim.lanes]
         speeds, distances = [], []
         for lane in self.sim.lanes:
@@ -52,10 +56,15 @@ class TrafficEnv(gym.Env):
         speeds = [max(s, 0) for s in speeds]
         distances = [min(d, 900) for d in distances]
         distances = [max(d, -300) for d in distances]
-        return np.array(num_cars + speeds + distances, dtype=np.float32)
+        return np.array([light_state] + [time_since_change] + num_cars + speeds + distances, dtype=np.float32)
 
     def _apply_action(self, action):
-        # Map action number (1–9) to horizontal/vertical colors
+        light_state = 0 if self.sim.horiz_light == 'g' else 1 if self.sim.vert_light == 'g' else 2
+        if action != light_state:
+            self.time_since_change = 0.0
+        else:
+            self.time_since_change += self.dt
+        # Map action number (0-2) to horizontal/vertical colors
         action_to_lights = {
             0: ('g', 'r'),
             1: ('r', 'g'),

@@ -244,10 +244,12 @@ class TrafficSim:
         self.num_crashes = 0
         self.total_time = 0
         self.trial_time = 60
+        self.cars_passed = 0
+        self.prev_passed = 0
 
         #lights
-        self.vert_light = "r"
-        self.horiz_light = "r"
+        self.vert_light = "g"
+        self.horiz_light = "g"
 
         self.prev_wait_time = 0
         self.prev_crashes = 0
@@ -397,6 +399,7 @@ class TrafficSim:
         
         self.num_crashes = 0
         self.total_time = 0
+        self.cars_passed = 0
 
     def draw_screen(self):
         #clear screen
@@ -673,6 +676,9 @@ class TrafficSim:
             for i in self.lanes:
                 for j in range(len(i)-1, -1, -1):
                     if i[j].distance > self.screen_height + self.car_length:
+                        self.cars_passed += 1
+                        print("Car passed!")
+                        print(self.cars_passed)
                         i.pop(j)
         
             self.checkForCrashes()
@@ -681,6 +687,7 @@ class TrafficSim:
                     
     def step_sim(self, dt, render):
         self.prev_wait_time = self.total_wait_time
+        self.prev_passed = self.cars_passed
 
         self.createCar()
 
@@ -696,6 +703,7 @@ class TrafficSim:
         for lane in self.lanes:
             for i in range(len(lane)-1, -1, -1):
                 if lane[i].distance > self.screen_height + self.car_length:
+                    self.cars_passed += 1
                     lane.pop(i)
 
         # Check for crashes
@@ -703,6 +711,7 @@ class TrafficSim:
         self.checkForCrashes()
         crash_diff = self.num_crashes - self.prev_crashes
         wait_diff = self.total_wait_time - self.prev_wait_time
+        passed_diff = self.cars_passed - self.prev_passed
 
         if render:
             if not pygame.get_init():
@@ -712,7 +721,7 @@ class TrafficSim:
         # Compute reward
         # reward = -waiting time difference - (10000 × number of new crashes)
         if self.reward_function == 'normal':
-            reward = -wait_diff - (crash_diff * 10000)
+            reward = (passed_diff * 50) - (crash_diff * 10000)
 
         self.average_wait_time = (self.total_wait_time / self.num_cars) if self.num_cars > 0 else 0.0
 
@@ -725,6 +734,7 @@ class TrafficSim:
             "wait_diff": wait_diff,
             "num_crashes": self.num_crashes,
             "new_crashes": crash_diff,
+            "cars_passed": self.cars_passed,
             "cars_per_lane": [len(l) for l in self.lanes]
         }
         self.total_time += dt

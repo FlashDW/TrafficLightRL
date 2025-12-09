@@ -22,11 +22,11 @@ def make_env():
 
 venv = DummyVecEnv([lambda: make_env()])
 
-venv = VecNormalize.load("pics and vids and stuff/100 million new actions/traffic_env_norm_new_actions_100M.pkl", venv)
+venv = VecNormalize.load("data/#6 100 million on VM more obs/traffic_env_norm_more_obs_100M.pkl", venv)
 venv.training = False
 venv.norm_reward = False
 
-model = PPO.load("pics and vids and stuff/100 million new actions/traffic_ppo_new_actions_100M.zip", env=venv)
+model = PPO.load("data/#6 100 million on VM more obs/traffic_ppo_more_obs_100M.zip", env=venv)
 
 obs = venv.reset()
 
