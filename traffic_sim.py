@@ -684,6 +684,12 @@ class TrafficSim:
             self.checkForCrashes()
 
             self.draw_screen()
+
+    def waiting_rew(self):
+        return -self.total_wait_time
+    
+    def passed_car_rew(self):
+        return self.cars_passed * 50
                     
     def step_sim(self, dt, render):
         self.prev_wait_time = self.total_wait_time
@@ -721,7 +727,9 @@ class TrafficSim:
         # Compute reward
         # reward = -waiting time difference - (10000 × number of new crashes)
         if self.reward_function == 'normal':
-            reward = (passed_diff * 50) - (crash_diff * 10000)
+            waiting_rew = self.waiting_rew()
+            passed_rew = self.passed_car_rew()
+            reward = waiting_rew + passed_rew
 
         self.average_wait_time = (self.total_wait_time / self.num_cars) if self.num_cars > 0 else 0.0
 
@@ -735,7 +743,9 @@ class TrafficSim:
             "num_crashes": self.num_crashes,
             "new_crashes": crash_diff,
             "cars_passed": self.cars_passed,
-            "cars_per_lane": [len(l) for l in self.lanes]
+            "cars_per_lane": [len(l) for l in self.lanes],
+            "waiting_rew": waiting_rew,
+            "passed_rew": passed_rew
         }
         self.total_time += dt
 
