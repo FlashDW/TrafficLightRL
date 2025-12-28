@@ -67,7 +67,7 @@ if __name__ == "__main__":
     )
 
     start = time.time()
-    model.learn(total_timesteps=100_000_000, callback=checkpoint_callback)
+    model.learn(total_timesteps=10_000_000, callback=checkpoint_callback)
     end = time.time()
 
     print(f"Training took {end - start:.2f} seconds")
@@ -77,8 +77,8 @@ if __name__ == "__main__":
     print(f"{(end - start)/3600:.2f} hours")
 
     # Save normalized environment and trained model
-    env.save("traffic_env_norm_more_obs_100M.pkl")
-    model.save("traffic_ppo_more_obs_100M")
+    env.save("traffic_env_norm_small_test.pkl")
+    model.save("traffic_ppo_small_test.zip")
 
     env.close()
 

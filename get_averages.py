@@ -21,12 +21,11 @@ def make_env():
 
 venv = DummyVecEnv([lambda: make_env()])
 
-venv = VecNormalize.load("data/#7 100 million on VM/traffic_env_norm_train_7_100M.pkl", venv)
+venv = VecNormalize.load("data/#9 small test 2 ask for time/traffic_env_norm_small_test2.pkl", venv)
 venv.training = False
 venv.norm_reward = False
 
-model = PPO.load("data/#7 100 million on VM/traffic_ppo_train_7_100M.zip", env=venv)
-
+model = PPO.load("data/#9 small test 2 ask for time/traffic_ppo_small_test2.zip", env=venv)
 obs = venv.reset()
 
 inner = venv.envs[0]
@@ -37,6 +36,9 @@ running = True
 
 total_crashes = 0
 wait_time_per_car = 0
+wait_reward = 0
+crash_reward = 0
+total_reward = 0
 count = 0
 max_episodes = 15
 num_cars = 0
@@ -50,8 +52,12 @@ while count<max_episodes and running:
     num_cars = inner.sim.num_cars
 
     if done:
+        wait_reward += info[0]["waiting_rew"]
+        crash_reward += info[0]["passed_rew"]
         total_crashes += info[0]["num_crashes"]
         wait_time_per_car += info[0]["average_wait_time"]
+        total_reward += reward
+        print(reward)
         num_cars = 0
         prev_cars = 0
         count += 1
@@ -60,5 +66,8 @@ while count<max_episodes and running:
 
 print()
 
-print(f"Average crashes per episode: {total_crashes / max_episodes}")
+print(f"Average crashes per minute: {total_crashes / max_episodes}")
 print(f"Average wait time per car: {wait_time_per_car / max_episodes} seconds")
+print(f"Average wait reward per episode: {wait_reward / max_episodes}")
+print(f"Average passing reward per episode: {crash_reward / max_episodes}")
+print(f"Average total reward per episode: {total_reward / max_episodes}")

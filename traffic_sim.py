@@ -248,11 +248,14 @@ class TrafficSim:
         self.prev_passed = 0
 
         #lights
-        self.vert_light = "g"
+        self.vert_light = "r"
         self.horiz_light = "g"
 
         self.prev_wait_time = 0
         self.prev_crashes = 0
+
+        self.wait_diff = 0
+        self.passed_diff = 0
 
     def init_pygame(self):
         #initialize pygame
@@ -686,10 +689,10 @@ class TrafficSim:
             self.draw_screen()
 
     def waiting_rew(self):
-        return -self.total_wait_time
+        return -2 * self.wait_diff
     
     def passed_car_rew(self):
-        return self.cars_passed * 50
+        return self.passed_diff * 50
                     
     def step_sim(self, dt, render):
         self.prev_wait_time = self.total_wait_time
@@ -716,8 +719,8 @@ class TrafficSim:
         self.prev_crashes = self.num_crashes
         self.checkForCrashes()
         crash_diff = self.num_crashes - self.prev_crashes
-        wait_diff = self.total_wait_time - self.prev_wait_time
-        passed_diff = self.cars_passed - self.prev_passed
+        self.wait_diff = self.total_wait_time - self.prev_wait_time
+        self.passed_diff = self.cars_passed - self.prev_passed
 
         if render:
             if not pygame.get_init():
@@ -725,7 +728,6 @@ class TrafficSim:
             self.draw_screen()
 
         # Compute reward
-        # reward = -waiting time difference - (10000 × number of new crashes)
         if self.reward_function == 'normal':
             waiting_rew = self.waiting_rew()
             passed_rew = self.passed_car_rew()
@@ -739,7 +741,7 @@ class TrafficSim:
             "horiz_light": self.horiz_light,
             "total_wait_time": self.total_wait_time,
             "average_wait_time": self.average_wait_time,
-            "wait_diff": wait_diff,
+            "wait_diff": self.wait_diff,
             "num_crashes": self.num_crashes,
             "new_crashes": crash_diff,
             "cars_passed": self.cars_passed,

@@ -1,0 +1,61 @@
+normalized observations and rewards
+
+changed reward function to:
+reward = -2 * wait_diff + passed_diff * 50
+
+changed obs to:
+[current light state, time remaining in state, number of cars in each lane (4), speed of first 3 cars (4), distance of first 3 cars (4)]
+
+changed actions to:
+Action #	Phase	Light State (H / V)	Duration (seconds)
+0	        0	Green / Red	        2
+1	        0	Green / Red	        4
+2	        0	Green / Red	        6
+3	        0	Green / Red	        8
+4	        0	Green / Red	        10
+5	        1	Red / Green	        2
+6	        1	Red / Green	        4
+7	        1	Red / Green	        6
+8	        1	Red / Green	        8
+9	        1	Red / Green	        10
+10	        2	Yellow / Yellow	        2
+11	        2	Yellow / Yellow	        4
+12	        2	Yellow / Yellow	        6
+13	        2	Yellow / Yellow	        8
+14	        2	Yellow / Yellow	        10
+
+model: PPO
+
+trained on GPU of RTX 4000
+
+trained with 8 envs
+
+100 million timesteps
+
+neural network: 256, 256, 128
+
+ReLU
+
+learning rate scheduele: lr_schedule = lambda progress_remaining: max(5e-4 * progress_remaining, 1e-5)
+
+n_steps=2048,
+        batch_size=64,
+        n_epochs=10,
+        gamma=0.99,
+        gae_lambda=0.95,
+        clip_range=0.2,
+        ent_coef=0.01,
+        vf_coef=0.5,
+        max_grad_norm=0.5,
+        policy_kwargs=policy_kwargs,
+
+Training took 
+
+Training took 12780 seconds
+or
+213 minutes
+or
+3.55 hours
+
+Average crashes per minute: 0.06
+Average wait time per car: 11.3 seconds

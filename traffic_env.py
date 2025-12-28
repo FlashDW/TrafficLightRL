@@ -18,12 +18,13 @@ class TrafficEnv(gym.Env):
         1 = horizontal red verticle green
         2 = both yellow
         """
-        self.action_space = spaces.Discrete(3)
+        self.durations = [2.0, 4.0, 6.0, 8.0, 10.0]
+        self.action_space = spaces.Discrete(3 * len(self.durations))
 
-        # Observation: [current light state, number of cars in each lane (4), speed of first 3 cars (4), distance of first 3 cars (4)]
+        # Observation: [current light state, time remaining, number of cars in each lane (4), speed of first 3 cars (4), distance of first 3 cars (4)]
         self.observation_space = spaces.Box(
-            low=np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300], dtype=np.float32),
-            high=np.array([2, 300, 300, 300, 300, 457, 457, 457, 457, 457, 457, 457, 457, 457, 457, 457, 457, 900, 900, 900, 900, 900, 900, 900, 900, 900, 900, 900, 900], dtype=np.float32),
+            low=np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300], dtype=np.float32),
+            high=np.array([2, int(max(self.durations)), 300, 300, 300, 300, 457, 457, 457, 457, 457, 457, 457, 457, 457, 457, 457, 457, 900, 900, 900, 900, 900, 900, 900, 900, 900, 900, 900, 900], dtype=np.float32),
             dtype=np.float32
         )
 
@@ -31,7 +32,10 @@ class TrafficEnv(gym.Env):
 
         self.dt = 1/20
 
-        self.time_since_change = 0.0
+        self.current_phase = 0
+        
+        self.time_remaining = 0.0
+
 
     # Helper functions
     def _get_observation(self):
@@ -55,14 +59,9 @@ class TrafficEnv(gym.Env):
         speeds = [max(s, 0) for s in speeds]
         distances = [min(d, 900) for d in distances]
         distances = [max(d, -300) for d in distances]
-        return np.array([light_state] + num_cars + speeds + distances, dtype=np.float32)
+        return np.array([light_state, self.time_remaining] + num_cars + speeds + distances, dtype=np.float32)
 
     def _apply_action(self, action):
-        light_state = 0 if self.sim.horiz_light == 'g' else 1 if self.sim.vert_light == 'g' else 2
-        if action != light_state:
-            self.time_since_change = 0.0
-        else:
-            self.time_since_change += self.dt
         # Map action number (0-2) to horizontal/vertical colors
         action_to_lights = {
             0: ('g', 'r'),
@@ -74,22 +73,30 @@ class TrafficEnv(gym.Env):
 
     # Main Gym methods
     def step(self, action):
-        self._apply_action(int(action))
+        if self.time_remaining <= 0:
+            phase = action // len(self.durations)
+            duration = self.durations[action % len(self.durations)]
+
+            if phase != self.current_phase:
+                self._apply_action(phase)
+                self.current_phase = phase
+
+            self.time_remaining = duration
+
+        
         reward, info = self.sim.step_sim(self.dt, self.render)
+        self.time_remaining = max(self.time_remaining - self.dt, 0.0)
 
         obs = self._get_observation()
-        terminated = self.sim.num_crashes > 0
+        terminated = False #self.sim.num_crashes > 0*************************************************************************
         truncated = self.sim.total_time >= self.sim.trial_time
         
         return obs, reward, terminated, truncated, info
-
-    def render(self):
-        if not pygame.get_init():
-            self.sim.init_pygame()
-        self.sim.draw_screen()
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
         self.sim.reset_vals()
         self.sim.total_time = 0
+        self.time_remaining = 0.0
+        self.current_phase = 0
         return self._get_observation(), {}
