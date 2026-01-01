@@ -13,16 +13,31 @@ Action #	Phase	Light State (H / V)	Duration (seconds)
 2	        0	Green / Red	        6
 3	        0	Green / Red	        8
 4	        0	Green / Red	        10
-5	        1	Red / Green	        2
-6	        1	Red / Green	        4
-7	        1	Red / Green	        6
-8	        1	Red / Green	        8
-9	        1	Red / Green	        10
-10	        2	Yellow / Yellow	        2
-11	        2	Yellow / Yellow	        4
-12	        2	Yellow / Yellow	        6
-13	        2	Yellow / Yellow	        8
-14	        2	Yellow / Yellow	        10
+5	        0	Green / Red	        12
+6	        0	Green / Red	        14
+7	        0	Green / Red	        16
+8	        0	Green / Red	        18
+9	        0	Green / Red	        20
+10	        1	Red / Green	        2
+11	        1	Red / Green	        4
+12	        1	Red / Green	        6
+13	        1	Red / Green	        8
+14	        1	Red / Green	        10
+15	        1	Red / Green	        12
+16	        1	Red / Green	        14
+17	        1	Red / Green	        16
+18	        1	Red / Green	        18
+19	        1	Red / Green	        20
+20	        2	Yellow / Yellow	        2
+21	        2	Yellow / Yellow	        4
+22	        2	Yellow / Yellow	        6
+23	        2	Yellow / Yellow	        8
+24	        2	Yellow / Yellow	        10
+25	        2	Yellow / Yellow	        12
+26	        2	Yellow / Yellow	        14
+27	        2	Yellow / Yellow	        16
+28	        2	Yellow / Yellow	        18
+29	        2	Yellow / Yellow	        20
 
 model: PPO
 
@@ -30,7 +45,7 @@ trained on GPU of RTX 4000
 
 trained with 8 envs
 
-100 million timesteps
+10 million timesteps
 
 neural network: 256, 256, 128
 
@@ -49,13 +64,11 @@ n_steps=2048,
         max_grad_norm=0.5,
         policy_kwargs=policy_kwargs,
 
-Training took 
-
-Training took 12780 seconds
+Training took 12,780 seconds
 or
 213 minutes
 or
-3.55 hours
+3.5 hours
 
 Average crashes per minute: 0.06
 Average wait time per car: 11.3 seconds

@@ -92,6 +92,7 @@ class TrafficSim:
         self.font = None
         self.font1 = None
         self.font2 = None
+        self.font3 = None
 
         self.screen_width = 900
         self.screen_height = 900
@@ -138,7 +139,8 @@ class TrafficSim:
                 TrafficSim.fonts = {
                     'main': pygame.font.SysFont('couriernew', 20),
                     'small': pygame.font.SysFont('couriernew', 15),
-                    'large': pygame.font.SysFont('couriernew', 50)
+                    'large': pygame.font.SysFont('couriernew', 50),
+                    'mid': pygame.font.SysFont('couriernew', 30)
                 }
 
             pygame.display.quit()
@@ -147,6 +149,7 @@ class TrafficSim:
         self.font = TrafficSim.fonts['main']
         self.font1 = TrafficSim.fonts['small']
         self.font2 = TrafficSim.fonts['large']
+        self.font3 = TrafficSim.fonts['mid']
         self.car_img = TrafficSim.car_img
         self.car_img_right = TrafficSim.cached_cars["right"]
         self.car_img_left = TrafficSim.cached_cars["left"]
@@ -256,6 +259,7 @@ class TrafficSim:
 
         self.wait_diff = 0
         self.passed_diff = 0
+        self.time_remaining = 0
 
     def init_pygame(self):
         #initialize pygame
@@ -617,6 +621,9 @@ class TrafficSim:
         
         time_surface = self.font2.render(f"{round(self.trial_time - self.total_time)}", True, (255, 255, 255))
         self.screen.blit(time_surface, (self.screen_width - time_surface.get_size()[0], 0))
+
+        remaining_surface = self.font3.render(f"Time remaining: {round(self.time_remaining)}", True, (255, 255, 255))
+        self.screen.blit(remaining_surface, (10, crash_surface.get_size()[1] + wait_surface.get_size()[1] + 10))
         
         #amount of cars in each lane
         num_cars_du_surface = self.font.render(f"{len(self.du)}", True, (255, 255, 255))

@@ -22,11 +22,11 @@ def make_env():
 
 venv = DummyVecEnv([lambda: make_env()])
 
-venv = VecNormalize.load("data/#9 small test 2 ask for time/traffic_env_norm_small_test2.pkl", venv)
+venv = VecNormalize.load("data/#11 small test 4/traffic_env_norm_small_test4.pkl", venv)
 venv.training = False
 venv.norm_reward = False
 
-model = PPO.load("data/#9 small test 2 ask for time/traffic_ppo_small_test2.zip", env=venv)
+model = PPO.load("data/#11 small test 4/traffic_ppo_small_test4.zip", env=venv)
 
 obs = venv.reset()
 

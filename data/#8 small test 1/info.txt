@@ -28,13 +28,11 @@ n_steps=2048,
         max_grad_norm=0.5,
         policy_kwargs=policy_kwargs,
 
-Training took 
-
-Training took 93,600 seconds
+Training took 14,256 seconds
 or
-1,600 minutes
+237 minutes
 or
-26 hours
+4 hours
 
 Average crashes per minute: 4.8
 Average wait time per car: 3.5 seconds

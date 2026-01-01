@@ -31,8 +31,6 @@ n_steps=2048,
         max_grad_norm=0.5,
         policy_kwargs=policy_kwargs,
 
-Training took 
-
 Training took 130,000 seconds
 or
 2,165 minutes
