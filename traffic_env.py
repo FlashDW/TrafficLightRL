@@ -71,9 +71,8 @@ class TrafficEnv(gym.Env):
         r, info = self.sim.step_sim(self.dt, self.render)
         reward += r
         self.time_remaining = max(self.time_remaining - self.dt, 0.0)
-
         obs = self._get_observation()
-        terminated = False #self.sim.num_crashes > 0************************************************
+        terminated = False #self.sim.num_crashes > 0***********************************************************************
         truncated = self.sim.total_time >= self.sim.trial_time
 
         if terminated:
