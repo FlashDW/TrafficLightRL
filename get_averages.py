@@ -21,11 +21,11 @@ def make_env():
 
 venv = DummyVecEnv([lambda: make_env()])
 
-venv = VecNormalize.load("data/#12 final/traffic_env_norm_final.pkl", venv)
+venv = VecNormalize.load("data/bad_rf/traffic_env_norm_bad_rf.pkl", venv)
 venv.training = False
 venv.norm_reward = False
 
-model = PPO.load("data/#12 final/traffic_ppo_final.zip", env=venv)
+model = PPO.load("data/bad_rf/traffic_ppo_bad_rf.zip", env=venv)
 obs = venv.reset()
 
 inner = venv.envs[0]
