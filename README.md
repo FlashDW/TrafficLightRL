@@ -1,10 +1,15 @@
-**Traffic Light RL**  
+# Traffic Light Reinforcement Learning
+*A reinforcement‑learning–powered traffic intersection simulation*
+## Overview
+This is my 8th‑grade science fair project where I designed and programmed a traffic‑intersection simulator in Python, then trained an AI agent to control the traffic lights using reinforcement learning. The goal was to reduce wait time and crashes by allowing the agent to learn optimal light‑switching patterns through trial and error.  
 
-**Project Summary**  
-This is my 8th grade science fair project. I coded a simulation of a traffic intersection, and I taught AI to control the traffic lights using reinforcement learning. 
-This project was made entirely in Python and uses Pygame, Gymnasium, and Stable Baselines3.
+The project uses:  
+- Python  
+- Pygame for visualization  
+- Gymnasium for the custom RL environment  
+- Stable Baselines3 for training the agent
 
-**Science Fair Awards**  
--First place at my school's science fair  
--First place at PJAS region 7  
--Directors award at PJAS region 7 for best middle school computer science project
+## Science Fair Awards
+- 1st Place - School Science Fair  
+- 1st Place - PJAS Region 7  
+- Directors Award - PJAS Region 7 (*for best middle school computer science project*)
